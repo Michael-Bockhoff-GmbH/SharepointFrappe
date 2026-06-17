@@ -5,32 +5,42 @@ app_description = "Upload attachments to SharePoint and Google Drive from Frappe
 app_email = "krunalprajapati1904@gmail.com"
 app_license = "mit"
 
+# Branding
+# ------------------
+app_logo_url = "/assets/frapnexus/images/frapnexus-icon.png"
+
 # Apps
 # ------------------
 
+override_doctype_class = {
+    "File": "frapnexus.overrides.file_override.CustomFile"
+}
 # required_apps = []
 
 # Each item in the list will be shown as an app in the apps page
-# add_to_apps_screen = [
-# 	{
-# 		"name": "frapnexus",
-# 		"logo": "/assets/frapnexus/logo.png",
-# 		"title": "Frapnexus",
-# 		"route": "/frapnexus",
-# 		"has_permission": "frapnexus.api.permission.has_app_permission"
-# 	}
-# ]
+add_to_apps_screen = [
+    {
+        "name": "frapnexus",
+        "logo": "/assets/frapnexus/images/frapnexus-icon.png",
+        "title": "FrapNexus",
+        "route": "/app/fn-cloud-connection",
+    }
+]
 
 # Includes in <head>
 # ------------------
 
 # include js, css files in header of desk.html
-# app_include_css = "/assets/frapnexus/css/frapnexus.css"
-# app_include_js = "/assets/frapnexus/js/frapnexus.js"
+app_include_js = "/assets/frapnexus/js/frapnexus_brand.js"
 
 # include js, css files in header of web template
 # web_include_css = "/assets/frapnexus/css/frapnexus.css"
 # web_include_js = "/assets/frapnexus/js/frapnexus.js"
+
+# Website branding (favicon for portal / guide pages)
+website_context = {
+    "favicon": "/assets/frapnexus/images/favicon.ico",
+}
 
 # include custom scss in every website theme (without file extension ".scss")
 # website_theme_scss = "frapnexus/public/scss/website"

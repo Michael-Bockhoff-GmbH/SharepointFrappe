@@ -1,0 +1,106 @@
+{
+ "charts": [],
+ "content": "[{\"id\": \"fnxHeader\", \"type\": \"header\", \"data\": {\"text\": \"<span class=\\\"h4\\\"><b>FrapNexus</b></span>\", \"col\": 12}}, {\"id\": \"fnxIntro\", \"type\": \"paragraph\", \"data\": {\"text\": \"Connect SharePoint &amp; Google Drive, and route your file attachments with upload rules.\", \"col\": 12}}, {\"id\": \"fnxSc1\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Cloud Connections\", \"col\": 3}}, {\"id\": \"fnxSc2\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Upload Rules\", \"col\": 3}}, {\"id\": \"fnxSc3\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Setup Guide\", \"col\": 3}}, {\"id\": \"fnxCard1\", \"type\": \"card\", \"data\": {\"card_name\": \"Connections & Rules\", \"col\": 4}}, {\"id\": \"fnxCard2\", \"type\": \"card\", \"data\": {\"card_name\": \"Testing & Reference\", \"col\": 4}}]",
+ "creation": "2026-06-17 10:30:00.000000",
+ "custom_blocks": [],
+ "docstatus": 0,
+ "doctype": "Workspace",
+ "for_user": "",
+ "hide_custom": 0,
+ "icon": "integration",
+ "idx": 0,
+ "is_hidden": 0,
+ "label": "FrapNexus",
+ "links": [
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Connections & Rules",
+   "link_count": 2,
+   "onboard": 0,
+   "type": "Card Break"
+  },
+  {
+   "dependencies": "",
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Cloud Connection",
+   "link_count": 0,
+   "link_to": "FN Cloud Connection",
+   "link_type": "DocType",
+   "onboard": 1,
+   "type": "Link"
+  },
+  {
+   "dependencies": "",
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Upload Rule",
+   "link_count": 0,
+   "link_to": "FN Upload Rule",
+   "link_type": "DocType",
+   "onboard": 1,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Testing & Reference",
+   "link_count": 1,
+   "onboard": 0,
+   "type": "Card Break"
+  },
+  {
+   "dependencies": "",
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Test Upload",
+   "link_count": 0,
+   "link_to": "FN Test Upload",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  }
+ ],
+ "modified": "2026-06-17 10:30:00.000000",
+ "modified_by": "Administrator",
+ "module": "Frapnexus",
+ "name": "FrapNexus",
+ "number_cards": [],
+ "owner": "Administrator",
+ "parent_page": "",
+ "public": 1,
+ "quick_lists": [],
+ "restrict_to_domain": "",
+ "roles": [
+  {
+   "role": "System Manager"
+  }
+ ],
+ "sequence_id": 1.0,
+ "shortcuts": [
+  {
+   "color": "Blue",
+   "doc_view": "List",
+   "label": "Cloud Connections",
+   "link_to": "FN Cloud Connection",
+   "stats_filter": "{}",
+   "type": "DocType"
+  },
+  {
+   "color": "Green",
+   "doc_view": "List",
+   "label": "Upload Rules",
+   "link_to": "FN Upload Rule",
+   "stats_filter": "{}",
+   "type": "DocType"
+  },
+  {
+   "color": "Grey",
+   "label": "Setup Guide",
+   "type": "URL",
+   "url": "/frapnexus-guide"
+  }
+ ],
+ "title": "FrapNexus"
+}
