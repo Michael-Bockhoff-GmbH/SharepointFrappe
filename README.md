@@ -67,7 +67,7 @@ Install with the [bench](https://github.com/frappe/bench) CLI:
 cd $PATH_TO_YOUR_BENCH
 
 # get the app
-bench get-app frapnexus $URL_OF_THIS_REPO --branch develop
+bench get-app frapnexus $URL_OF_THIS_REPO --branch main/develop
 
 # install onto a site
 bench --site $SITE_NAME install-app frapnexus
@@ -89,7 +89,7 @@ Managers) with shortcuts to all DocTypes and the setup guide.
 
 **Requirements**
 
-- Frappe v15+
+- Frappe v14+
 - Python 3.10+
 - Python packages `google-api-python-client` and `google-auth` (installed automatically)
 
