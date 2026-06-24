@@ -143,6 +143,9 @@ A full, illustrated setup-and-usage guide is bundled with the app and served at:
 ```
 https://your-site/frapnexus-guide
 ```
+## Technical Notes
+
+**FrapNexus overrides the core `File` DocType class (`override_doctype_class`) — intentionally and minimally.** Cloud-only storage must send the upload to SharePoint/Google Drive *instead of* writing it to local disk, and Frappe performs that disk write inside `File.save_file()` during `before_insert`, where it can't be intercepted via `doc_events` or post-save hooks. FrapNexus therefore overrides only `save_file()` to apply the matched FN Upload Rule, and delegates to `super().save_file()` for `Frappe only` storage and every other File operation.
 
 ## Contributing
 
