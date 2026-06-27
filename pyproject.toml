@@ -1,7 +1,7 @@
 [project]
 name = "frapnexus"
 authors = [
-    { name = "Octo Advisory", email = "krunalprajapati1904@gmail.com"}
+    { name = "Octo Advisory", email = "team@octoadvisory.com"}
 ]
 description = "Upload attachments to SharePoint and Google Drive from Frappe"
 requires-python = ">=3.10"
