@@ -2,7 +2,7 @@ app_name = "frapnexus"
 app_title = "Frapnexus"
 app_publisher = "Octo Advisory"
 app_description = "Upload attachments to SharePoint and Google Drive from Frappe"
-app_email = "krunalprajapati1904@gmail.com"
+app_email = "team@octoadvisory.com"
 app_license = "mit"
 
 # Branding
