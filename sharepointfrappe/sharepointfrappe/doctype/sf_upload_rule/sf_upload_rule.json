@@ -1,0 +1,137 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "field:target_doctype",
+ "creation": "2026-06-03 09:35:00",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "target_doctype",
+  "enabled",
+  "column_break_main",
+  "storage_mode",
+  "cloud_connection",
+  "naming_section",
+  "naming_strategy",
+  "naming_template",
+  "column_break_naming",
+  "conflict_behavior",
+  "folder_section",
+  "folder_section_help",
+  "folder_segments"
+ ],
+ "fields": [
+  {
+   "fieldname": "target_doctype",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Target Doctype",
+   "options": "DocType",
+   "reqd": 1,
+   "unique": 1
+  },
+  {
+   "default": "1",
+   "fieldname": "enabled",
+   "fieldtype": "Check",
+   "label": "Enabled"
+  },
+  {
+   "fieldname": "column_break_main",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "Both",
+   "fieldname": "storage_mode",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Storage Mode",
+   "options": "Frappe only\nCloud only\nBoth",
+   "reqd": 1
+  },
+  {
+   "depends_on": "eval:doc.storage_mode != \"Frappe only\"",
+   "fieldname": "cloud_connection",
+   "fieldtype": "Link",
+   "label": "Cloud Connection",
+   "mandatory_depends_on": "eval:doc.storage_mode != \"Frappe only\"",
+   "options": "SF Cloud Connection"
+  },
+  {
+   "depends_on": "eval:doc.storage_mode != \"Frappe only\"",
+   "fieldname": "naming_section",
+   "fieldtype": "Section Break",
+   "label": "File Naming"
+  },
+  {
+   "default": "Original",
+   "fieldname": "naming_strategy",
+   "fieldtype": "Select",
+   "label": "Naming Strategy",
+   "options": "Original\nTemplated"
+  },
+  {
+   "depends_on": "eval:doc.naming_strategy==\"Templated\"",
+   "description": "Placeholders: {name} = record id, {doctype} = doctype, {field} = attach fieldname, or {any_fieldname} = that field's value on the record. The original file extension is kept. e.g. {name} - {folder_name}",
+   "fieldname": "naming_template",
+   "fieldtype": "Data",
+   "label": "Naming Template",
+   "mandatory_depends_on": "eval:doc.naming_strategy==\"Templated\""
+  },
+  {
+   "fieldname": "column_break_naming",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "Rename",
+   "fieldname": "conflict_behavior",
+   "fieldtype": "Select",
+   "label": "Conflict Behavior",
+   "options": "Rename\nReplace\nFail"
+  },
+  {
+   "depends_on": "eval:doc.storage_mode != \"Frappe only\"",
+   "fieldname": "folder_section",
+   "fieldtype": "Section Break",
+   "label": "Folder Structure"
+  },
+  {
+   "fieldname": "folder_section_help",
+   "fieldtype": "HTML",
+   "label": "Folder Structure Help",
+   "options": "<p class=\"text-muted\">Each row is one folder level, top to bottom. Empty table uploads to the connection root.</p>"
+  },
+  {
+   "fieldname": "folder_segments",
+   "fieldtype": "Table",
+   "label": "Folder Segments",
+   "options": "SF Folder Segment"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2026-06-17 06:27:06.365739",
+ "modified_by": "Administrator",
+ "module": "Sharepointfrappe",
+ "name": "SF Upload Rule",
+ "naming_rule": "By fieldname",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "row_format": "Dynamic",
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}
