@@ -1,17 +1,19 @@
-<h1 align="center">SharepointFrappe</h1>
+<div align="center">
+  <img src="sharepointfrappe/public/images/logo_bockhoff.png" alt="Bockhoff Technologies" width="160" />
 
-<p align="center">
+  <h1>SharepointFrappe</h1>
+
   <b>Sync your Frappe file attachments to SharePoint &amp; Google Drive — and keep them in Frappe.</b>
-</p>
 
-<p align="center">
+  <br /><br />
+
   <a href="#features">Features</a> ·
   <a href="#how-it-works">How it works</a> ·
   <a href="#installation">Installation</a> ·
   <a href="#setup--configuration">Setup</a> ·
   <a href="#usage">Usage</a> ·
   <a href="#guide">Guide</a>
-</p>
+</div>
 
 ---
 
@@ -27,18 +29,16 @@ field across your site without touching your other apps.
 
 ## Features
 
-- **🔌 Multiple providers** — Connect SharePoint (via Azure AD app) and Google Drive (via service
-  account) side by side.
-- **📂 Per-DocType rules** — Choose `Frappe only`, `Cloud only`, or `Both` for each DocType.
-- **🧭 Templated folder paths** — Build cloud folders from static text, field values, the record
-  name, or the DocType name — with a live path preview in the form.
-- **🏷️ Flexible file naming** — Keep original filenames or apply a template like `{name}-{field}`.
-- **⚔️ Conflict handling** — Rename, replace, or fail on duplicate filenames.
-- **🔐 Cached credentials** — Tokens are cached with expiry so connections stay fast.
-- **🧭 SharepointFrappe workspace** — Installed on the desk home with shortcuts to every doctype and the
-  guide; visible to **System Manager** by default.
-- **🎨 Modern, branded forms** — Every SharepointFrappe form ships with a clean, on-brand UI and inline
-  guidance.
+| | |
+| --- | --- |
+| 🔌 **Multiple providers** | Connect SharePoint (via Azure AD app) and Google Drive (via service account) side by side. |
+| 📂 **Per-DocType rules** | Choose `Frappe only`, `Cloud only`, or `Both` for each DocType. |
+| 🧭 **Templated folder paths** | Build cloud folders from static text, field values, the record name, or the DocType name — with a live path preview in the form. |
+| 🏷️ **Flexible file naming** | Keep original filenames or apply a template like `{name}-{field}`. |
+| ⚔️ **Conflict handling** | Rename, replace, or fail on duplicate filenames. |
+| 🔐 **Cached credentials** | Tokens are cached with expiry so connections stay fast. |
+| 🧭 **SharepointFrappe workspace** | Installed on the desk home with shortcuts to every doctype and the guide; visible to **System Manager** by default. |
+| 🎨 **Modern, branded forms** | Every SharepointFrappe form ships with a clean, on-brand UI and inline guidance. |
 
 ## How it works
 
@@ -139,6 +139,7 @@ A full, illustrated setup-and-usage guide is bundled with the app and served at:
 ```
 https://your-site/sharepointfrappe-guide
 ```
+
 ## Technical Notes
 
 **SharepointFrappe overrides the core `File` DocType class (`override_doctype_class`) — intentionally and minimally.** Cloud-only storage must send the upload to SharePoint/Google Drive *instead of* writing it to local disk, and Frappe performs that disk write inside `File.save_file()` during `before_insert`, where it can't be intercepted via `doc_events` or post-save hooks. SharepointFrappe therefore overrides only `save_file()` to apply the matched SF Upload Rule, and delegates to `super().save_file()` for `Frappe only` storage and every other File operation.

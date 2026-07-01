@@ -5,6 +5,10 @@ app_description = "Upload attachments to SharePoint and Google Drive from Frappe
 app_email = "team@octoadvisory.com"
 app_license = "mit"
 
+# Branding
+# ------------------
+app_logo_url = "/assets/sharepointfrappe/images/logo_bockhoff.png"
+
 # Apps
 # ------------------
 
@@ -17,6 +21,7 @@ override_doctype_class = {
 add_to_apps_screen = [
     {
         "name": "sharepointfrappe",
+        "logo": "/assets/sharepointfrappe/images/logo_bockhoff.png",
         "title": "SharepointFrappe",
         "route": "/app/sf-cloud-connection",
     }
