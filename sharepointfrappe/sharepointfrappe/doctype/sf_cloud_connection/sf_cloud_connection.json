@@ -1,0 +1,211 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "field:connection_name",
+ "creation": "2026-06-03 09:00:00",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "connection_name",
+  "provider",
+  "enabled",
+  "status",
+  "sharepoint_section",
+  "tenant_id",
+  "client_id",
+  "client_secret",
+  "site_id",
+  "column_break_sp",
+  "site_name",
+  "site_path",
+  "drive_name",
+  "drive_id",
+  "google_drive_section",
+  "service_account_json_file",
+  "root_folder_id",
+  "column_break_kojo",
+  "service_account_json",
+  "cache_section",
+  "cached_token",
+  "column_break_cache",
+  "token_expiry"
+ ],
+ "fields": [
+  {
+   "fieldname": "connection_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Connection Name",
+   "reqd": 1,
+   "unique": 1
+  },
+  {
+   "fieldname": "provider",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Provider",
+   "options": "SharePoint\nGoogle Drive",
+   "read_only_depends_on": "eval:!doc.__islocal && doc.status==\"Connected\"",
+   "reqd": 1
+  },
+  {
+   "default": "1",
+   "fieldname": "enabled",
+   "fieldtype": "Check",
+   "label": "Enabled"
+  },
+  {
+   "depends_on": "eval:doc.provider==\"SharePoint\"",
+   "fieldname": "sharepoint_section",
+   "fieldtype": "Section Break",
+   "label": "SharePoint"
+  },
+  {
+   "fieldname": "tenant_id",
+   "fieldtype": "Data",
+   "label": "Tenant ID",
+   "mandatory_depends_on": "eval:doc.provider==\"SharePoint\"",
+   "read_only_depends_on": "eval:doc.status==\"Connected\""
+  },
+  {
+   "fieldname": "client_id",
+   "fieldtype": "Data",
+   "label": "Client ID",
+   "mandatory_depends_on": "eval:doc.provider==\"SharePoint\"",
+   "read_only_depends_on": "eval:doc.status==\"Connected\""
+  },
+  {
+   "fieldname": "client_secret",
+   "fieldtype": "Password",
+   "label": "Client Secret",
+   "mandatory_depends_on": "eval:doc.provider==\"SharePoint\"",
+   "read_only_depends_on": "eval:doc.status==\"Connected\""
+  },
+  {
+   "fieldname": "column_break_sp",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "site_name",
+   "fieldtype": "Data",
+   "label": "Site Name",
+   "mandatory_depends_on": "eval:doc.provider==\"SharePoint\"",
+   "read_only_depends_on": "eval:doc.status==\"Connected\""
+  },
+  {
+   "description": "The /sites/&lt;name&gt; portion of the SharePoint URL",
+   "fieldname": "site_path",
+   "fieldtype": "Data",
+   "label": "Site Path",
+   "read_only_depends_on": "eval:doc.status==\"Connected\""
+  },
+  {
+   "fieldname": "drive_name",
+   "fieldtype": "Data",
+   "label": "Drive Name (Document Library)",
+   "read_only_depends_on": "eval:doc.status==\"Connected\""
+  },
+  {
+   "depends_on": "eval:doc.provider==\"Google Drive\"",
+   "fieldname": "google_drive_section",
+   "fieldtype": "Section Break",
+   "label": "Google Drive"
+  },
+  {
+   "description": "Paste the full service-account key file contents",
+   "fieldname": "service_account_json",
+   "fieldtype": "Long Text",
+   "label": "Service Account JSON",
+   "mandatory_depends_on": "eval:doc.provider==\"Google Drive\"",
+   "read_only_depends_on": "eval:doc.status==\"Connected\""
+  },
+  {
+   "fieldname": "root_folder_id",
+   "fieldtype": "Data",
+   "label": "Root Folder ID",
+   "mandatory_depends_on": "eval:doc.provider==\"Google Drive\"",
+   "read_only_depends_on": "eval:doc.status==\"Connected\""
+  },
+  {
+   "collapsible": 1,
+   "fieldname": "cache_section",
+   "fieldtype": "Section Break",
+   "label": "Cached State"
+  },
+  {
+   "fieldname": "cached_token",
+   "fieldtype": "Password",
+   "label": "Cached Token",
+   "no_copy": 1,
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_cache",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "token_expiry",
+   "fieldtype": "Datetime",
+   "label": "Token Expiry",
+   "read_only": 1
+  },
+  {
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "label": "Status",
+   "options": "\nConnected\nNot Connected",
+   "read_only": 1
+  },
+  {
+   "fieldname": "site_id",
+   "fieldtype": "Data",
+   "label": "Site ID",
+   "no_copy": 1,
+   "read_only": 1
+  },
+  {
+   "fieldname": "drive_id",
+   "fieldtype": "Data",
+   "label": "Drive ID",
+   "no_copy": 1,
+   "read_only": 1
+  },
+  {
+   "depends_on": "eval: doc.provider==\"Google Drive\"",
+   "fieldname": "service_account_json_file",
+   "fieldtype": "Attach",
+   "label": "Service Account JSON File",
+   "options": "JSON"
+  },
+  {
+   "fieldname": "column_break_kojo",
+   "fieldtype": "Column Break"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2026-06-04 06:21:56.680505",
+ "modified_by": "Administrator",
+ "module": "Sharepointfrappe",
+ "name": "SF Cloud Connection",
+ "naming_rule": "By fieldname",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "row_format": "Dynamic",
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}
