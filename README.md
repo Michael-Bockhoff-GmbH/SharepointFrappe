@@ -1,7 +1,3 @@
-<div align="center">
-  <img src="sharepointfrappe/frapnexus-logo-pack/png/banner-1600x400.png" alt="SharepointFrappe" width="100%" />
-</div>
-
 <h1 align="center">SharepointFrappe</h1>
 
 <p align="center">
