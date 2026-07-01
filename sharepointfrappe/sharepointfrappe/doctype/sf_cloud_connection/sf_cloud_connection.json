@@ -7,7 +7,6 @@
  "engine": "InnoDB",
  "field_order": [
   "connection_name",
-  "provider",
   "enabled",
   "status",
   "sharepoint_section",
@@ -20,11 +19,6 @@
   "site_path",
   "drive_name",
   "drive_id",
-  "google_drive_section",
-  "service_account_json_file",
-  "root_folder_id",
-  "column_break_kojo",
-  "service_account_json",
   "cache_section",
   "cached_token",
   "column_break_cache",
@@ -40,22 +34,12 @@
    "unique": 1
   },
   {
-   "fieldname": "provider",
-   "fieldtype": "Select",
-   "in_list_view": 1,
-   "label": "Provider",
-   "options": "SharePoint\nGoogle Drive",
-   "read_only_depends_on": "eval:!doc.__islocal && doc.status==\"Connected\"",
-   "reqd": 1
-  },
-  {
    "default": "1",
    "fieldname": "enabled",
    "fieldtype": "Check",
    "label": "Enabled"
   },
   {
-   "depends_on": "eval:doc.provider==\"SharePoint\"",
    "fieldname": "sharepoint_section",
    "fieldtype": "Section Break",
    "label": "SharePoint"
@@ -64,21 +48,21 @@
    "fieldname": "tenant_id",
    "fieldtype": "Data",
    "label": "Tenant ID",
-   "mandatory_depends_on": "eval:doc.provider==\"SharePoint\"",
+   "reqd": 1,
    "read_only_depends_on": "eval:doc.status==\"Connected\""
   },
   {
    "fieldname": "client_id",
    "fieldtype": "Data",
    "label": "Client ID",
-   "mandatory_depends_on": "eval:doc.provider==\"SharePoint\"",
+   "reqd": 1,
    "read_only_depends_on": "eval:doc.status==\"Connected\""
   },
   {
    "fieldname": "client_secret",
    "fieldtype": "Password",
    "label": "Client Secret",
-   "mandatory_depends_on": "eval:doc.provider==\"SharePoint\"",
+   "reqd": 1,
    "read_only_depends_on": "eval:doc.status==\"Connected\""
   },
   {
@@ -89,7 +73,7 @@
    "fieldname": "site_name",
    "fieldtype": "Data",
    "label": "Site Name",
-   "mandatory_depends_on": "eval:doc.provider==\"SharePoint\"",
+   "reqd": 1,
    "read_only_depends_on": "eval:doc.status==\"Connected\""
   },
   {
@@ -103,27 +87,6 @@
    "fieldname": "drive_name",
    "fieldtype": "Data",
    "label": "Drive Name (Document Library)",
-   "read_only_depends_on": "eval:doc.status==\"Connected\""
-  },
-  {
-   "depends_on": "eval:doc.provider==\"Google Drive\"",
-   "fieldname": "google_drive_section",
-   "fieldtype": "Section Break",
-   "label": "Google Drive"
-  },
-  {
-   "description": "Paste the full service-account key file contents",
-   "fieldname": "service_account_json",
-   "fieldtype": "Long Text",
-   "label": "Service Account JSON",
-   "mandatory_depends_on": "eval:doc.provider==\"Google Drive\"",
-   "read_only_depends_on": "eval:doc.status==\"Connected\""
-  },
-  {
-   "fieldname": "root_folder_id",
-   "fieldtype": "Data",
-   "label": "Root Folder ID",
-   "mandatory_depends_on": "eval:doc.provider==\"Google Drive\"",
    "read_only_depends_on": "eval:doc.status==\"Connected\""
   },
   {
@@ -169,17 +132,6 @@
    "label": "Drive ID",
    "no_copy": 1,
    "read_only": 1
-  },
-  {
-   "depends_on": "eval: doc.provider==\"Google Drive\"",
-   "fieldname": "service_account_json_file",
-   "fieldtype": "Attach",
-   "label": "Service Account JSON File",
-   "options": "JSON"
-  },
-  {
-   "fieldname": "column_break_kojo",
-   "fieldtype": "Column Break"
   }
  ],
  "index_web_pages_for_search": 1,

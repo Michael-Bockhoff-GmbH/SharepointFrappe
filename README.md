@@ -3,7 +3,7 @@
 
   <h1>SharepointFrappe</h1>
 
-  <b>Sync your Frappe file attachments to SharePoint &amp; Google Drive — and keep them in Frappe.</b>
+  <b>Sync your Frappe file attachments to SharePoint — and keep them in Frappe.</b>
 
   <br /><br />
 
@@ -20,9 +20,9 @@
 ## Overview
 
 SharepointFrappe extends Frappe's built-in file handling so that whenever a file is attached to a
-record, it can be transparently uploaded to **SharePoint** or **Google Drive** in addition to —
-or instead of — Frappe's local storage. You decide, per DocType, *where* files live and *how*
-their cloud folder structure is named.
+record, it can be transparently uploaded to **SharePoint** in addition to — or instead of —
+Frappe's local storage. You decide, per DocType, *where* files live and *how* their cloud folder
+structure is named.
 
 It works by overriding Frappe's core `File` document class, so it applies to **every** attachment
 field across your site without touching your other apps.
@@ -31,7 +31,7 @@ field across your site without touching your other apps.
 
 | | |
 | --- | --- |
-| 🔌 **Multiple providers** | Connect SharePoint (via Azure AD app) and Google Drive (via service account) side by side. |
+| 🔌 **SharePoint integration** | Connect SharePoint via an Azure AD app. |
 | 📂 **Per-DocType rules** | Choose `Frappe only`, `Cloud only`, or `Both` for each DocType. |
 | 🧭 **Templated folder paths** | Build cloud folders from static text, field values, the record name, or the DocType name — with a live path preview in the form. |
 | 🏷️ **Flexible file naming** | Keep original filenames or apply a template like `{name}-{field}`. |
@@ -87,7 +87,6 @@ Managers) with shortcuts to all DocTypes and the setup guide.
 
 - Frappe v16+
 - Python 3.10+
-- Python packages `google-api-python-client` and `google-auth` (installed automatically)
 
 ## Setup & configuration
 
@@ -95,16 +94,10 @@ Managers) with shortcuts to all DocTypes and the setup guide.
 
 Go to **SF Cloud Connection → New**.
 
-**SharePoint**
 1. Register an app in Azure AD and grant it `Sites.ReadWrite.All`.
 2. Enter the **Tenant ID**, **Client ID**, and **Client Secret**.
 3. Enter the **Site Name** (the part after `/sites/` in the SharePoint URL) and the
    **Drive Name** (document library).
-
-**Google Drive**
-1. Create a service account in Google Cloud and download its JSON key.
-2. Share the destination Drive folder with the service account's email.
-3. Attach the JSON key file and set the **Root Folder ID**.
 
 Click **Connect** — a green *Connected* pill confirms the credentials work.
 
@@ -124,7 +117,7 @@ Go to **SF Upload Rule → New**.
 ### 3. Test it
 
 Use the bundled **SF Test Upload** DocType (or any DocType you wrote a rule for), attach a file, and
-confirm it appears in the target SharePoint/Drive folder.
+confirm it appears in the target SharePoint folder.
 
 ## Usage
 
@@ -142,7 +135,7 @@ https://your-site/sharepointfrappe-guide
 
 ## Technical Notes
 
-**SharepointFrappe overrides the core `File` DocType class (`override_doctype_class`) — intentionally and minimally.** Cloud-only storage must send the upload to SharePoint/Google Drive *instead of* writing it to local disk, and Frappe performs that disk write inside `File.save_file()` during `before_insert`, where it can't be intercepted via `doc_events` or post-save hooks. SharepointFrappe therefore overrides only `save_file()` to apply the matched SF Upload Rule, and delegates to `super().save_file()` for `Frappe only` storage and every other File operation.
+**SharepointFrappe overrides the core `File` DocType class (`override_doctype_class`) — intentionally and minimally.** Cloud-only storage must send the upload to SharePoint *instead of* writing it to local disk, and Frappe performs that disk write inside `File.save_file()` during `before_insert`, where it can't be intercepted via `doc_events` or post-save hooks. SharepointFrappe therefore overrides only `save_file()` to apply the matched SF Upload Rule, and delegates to `super().save_file()` for `Frappe only` storage and every other File operation.
 
 ## Contributing
 

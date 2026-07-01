@@ -18,45 +18,5 @@ frappe.ui.form.on('SF Cloud Connection', {
                 });
             }).addClass("btn-primary");
         }
-    },
-
-    service_account_json_file: function (frm) {
-        const file = frm.doc.service_account_json_file;
-        if (!file) return;
-        if (!file.toLowerCase().endsWith(".json")) {
-            frappe.msgprint({
-                title: __("Invalid File"),
-                message: __("Please upload a .json file only."),
-                indicator: "red",
-            });
-            frm.set_value("service_account_json_file", "");
-            return;
-        }
-
-        fetch(file)
-            .then((res) => res.text())
-            .then((text) => {
-                const json = JSON.parse(text);
-
-                if (json.type !== "service_account") {
-                    throw new Error("Invalid JSON");
-                }
-
-                return frappe.call({
-                    method: "frappe.client.set_value",
-                    args: {
-                        doctype: frm.doctype,
-                        name: frm.doc.name,
-                        fieldname: "service_account_json",
-                        value: text
-                    }
-                });
-            })
-            .then(() => {
-                frm.reload_doc();
-            })
-            .catch(() => {
-                frappe.msgprint(__("Invalid service account JSON"));
-            });
     }
 });

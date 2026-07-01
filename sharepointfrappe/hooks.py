@@ -1,7 +1,7 @@
 app_name = "sharepointfrappe"
 app_title = "SharepointFrappe"
 app_publisher = "Octo Advisory"
-app_description = "Upload attachments to SharePoint and Google Drive from Frappe"
+app_description = "Upload attachments to SharePoint from Frappe"
 app_email = "team@octoadvisory.com"
 app_license = "agpl-3.0"
 
