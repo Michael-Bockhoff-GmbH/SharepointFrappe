@@ -5,10 +5,6 @@ app_description = "Upload attachments to SharePoint and Google Drive from Frappe
 app_email = "team@octoadvisory.com"
 app_license = "mit"
 
-# Branding
-# ------------------
-app_logo_url = "/assets/sharepointfrappe/images/sharepointfrappe-icon.png"
-
 # Apps
 # ------------------
 
@@ -21,7 +17,6 @@ override_doctype_class = {
 add_to_apps_screen = [
     {
         "name": "sharepointfrappe",
-        "logo": "/assets/sharepointfrappe/images/sharepointfrappe-icon.png",
         "title": "SharepointFrappe",
         "route": "/app/sf-cloud-connection",
     }
@@ -38,9 +33,9 @@ app_include_js = "/assets/sharepointfrappe/js/sharepointfrappe_brand.js"
 # web_include_js = "/assets/sharepointfrappe/js/sharepointfrappe.js"
 
 # Website branding (favicon for portal / guide pages)
-website_context = {
-    "favicon": "/assets/sharepointfrappe/images/favicon.ico",
-}
+# website_context = {
+# 	"favicon": "/assets/sharepointfrappe/images/favicon.ico",
+# }
 
 # include custom scss in every website theme (without file extension ".scss")
 # website_theme_scss = "sharepointfrappe/public/scss/website"
