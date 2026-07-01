@@ -158,4 +158,5 @@ Configured tools: `ruff`, `eslint`, `prettier`, `pyupgrade`.
 
 ## License
 
-[MIT](license.txt) · © Octo Advisory
+[AGPLv3](license.txt) — this project was originally forked from a MIT-licensed codebase; the
+original notice is preserved in [license-original-mit.txt](license-original-mit.txt).
