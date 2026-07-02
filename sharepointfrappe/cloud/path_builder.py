@@ -2,6 +2,7 @@ import os
 import re
 
 import frappe
+from frappe import _
 from frappe.model import default_fields
 
 
@@ -100,13 +101,49 @@ def _segments_path(rule, file_doc):
     return "/".join(parts)
 
 
+def resolve_customer_field(doctype, rule=None):
+    """Find the field on `doctype` that identifies the customer.
+
+    Order: an explicit override on the rule, then a field literally named
+    'customer', then a Link field pointing at Customer, then a Dynamic Link
+    party field (e.g. Quotation's 'party_name'). Returns None if nothing fits.
+    """
+    meta = frappe.get_meta(doctype)
+
+    override = getattr(rule, "customer_field", None) if rule else None
+    if override:
+        return override if meta.get_field(override) else None
+
+    if meta.get_field("customer"):
+        return "customer"
+    for df in meta.fields:
+        if df.fieldtype == "Link" and df.options == "Customer":
+            return df.fieldname
+    for df in meta.fields:
+        if df.fieldtype == "Dynamic Link":
+            return df.fieldname
+    return None
+
+
+def _link_target(doctype, docname, fieldname):
+    """The doctype a link/dynamic-link field points at (for readable-name lookup)."""
+    df = frappe.get_meta(doctype).get_field(fieldname)
+    if not df:
+        return None
+    if df.fieldtype == "Link":
+        return df.options
+    if df.fieldtype == "Dynamic Link":
+        return frappe.db.get_value(doctype, docname, df.options)
+    return None
+
+
 def _customer_path(rule, file_doc):
     """Build '<customer> / <doctype>', optionally under a '<company>' top folder.
 
-    The record's `customer` field gives the customer; the folder is that id with
-    the customer's readable name appended as 'id - name' when they differ (e.g. a
-    naming-series 'CUST-0001 - Acme'). When 'Company as Top Folder' is on, the
-    record's `company` field is prepended.
+    The customer field is auto-detected (or set on the rule); the folder is that
+    id with the customer's readable name appended as 'id - name' when they differ
+    (e.g. a naming-series 'CUST-0001 - Acme'). When 'Company as Top Folder' is on,
+    the record's `company` field is prepended.
     """
     doctype = file_doc.attached_to_doctype
     docname = file_doc.attached_to_name
@@ -116,8 +153,16 @@ def _customer_path(rule, file_doc):
         company = _field_value(doctype, docname, "company")
         parts.append(_party_folder("Company", company))
 
-    customer = _field_value(doctype, docname, "customer")
-    parts.append(_party_folder("Customer", customer))
+    cust_field = resolve_customer_field(doctype, rule)
+    if not cust_field:
+        frappe.throw(
+            _("No customer field found on '{0}'. Set a Customer Field on the SF Upload Rule.").format(
+                doctype
+            )
+        )
+    customer_id = _field_value(doctype, docname, cust_field)
+    linked_doctype = _link_target(doctype, docname, cust_field)
+    parts.append(_party_folder(linked_doctype, customer_id))
     parts.append(_clean(doctype) or "Unfiled")
     return "/".join(parts)
 

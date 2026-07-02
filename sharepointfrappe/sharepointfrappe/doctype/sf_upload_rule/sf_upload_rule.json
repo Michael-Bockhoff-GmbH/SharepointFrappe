@@ -18,6 +18,7 @@
   "conflict_behavior",
   "folder_section",
   "folder_structure",
+  "customer_field",
   "prepend_company",
   "folder_section_help",
   "folder_segments"
@@ -106,6 +107,13 @@
    "label": "Folder Structure Mode",
    "options": "Folder Segments\nGroup by Customer",
    "reqd": 1
+  },
+  {
+   "depends_on": "eval:doc.folder_structure==\"Group by Customer\"",
+   "description": "Leave empty to auto-detect the customer field. Set this for doctypes where the customer is under a different field (e.g. <code>party_name</code> on Quotation).",
+   "fieldname": "customer_field",
+   "fieldtype": "Select",
+   "label": "Customer Field"
   },
   {
    "default": "0",
