@@ -2,6 +2,25 @@ import os
 import re
 
 import frappe
+from frappe.model import default_fields
+
+
+def _field_value(doctype, docname, fieldname):
+    """Read a field off the attached record, guarding against a bad fieldname.
+
+    Raises a clear error instead of letting an unknown-column database error
+    surface as a generic 500 during upload.
+    """
+    if not (doctype and docname and fieldname):
+        return None
+    meta = frappe.get_meta(doctype)
+    if not meta.get_field(fieldname) and fieldname not in default_fields:
+        frappe.throw(
+            f"Folder/naming segment references field '{fieldname}', which does not "
+            f"exist on DocType '{doctype}'. Fix the SF Upload Rule.",
+            title="Invalid SF Upload Rule",
+        )
+    return frappe.db.get_value(doctype, docname, fieldname)
 
 
 def build_filename(rule, file_doc):
@@ -33,10 +52,8 @@ def build_filename(rule, file_doc):
             value = doctype
         elif key == "field":
             value = field
-        elif doctype and docname:
-            value = frappe.db.get_value(doctype, docname, key)
         else:
-            value = None
+            value = _field_value(doctype, docname, key)
         return _clean(value)
 
     base = re.sub(r"\{([^{}]+)\}", resolve, template).strip()
@@ -62,7 +79,9 @@ def build_path(rule, file_doc):
         elif seg.segment_type == "Record Name":
             value = docname
         elif seg.segment_type == "Field Value":
-            value = frappe.db.get_value(doctype, docname, seg.value)
+            # field_name is the current field; fall back to value for older rows
+            fieldname = getattr(seg, "field_name", None) or seg.value
+            value = _field_value(doctype, docname, fieldname)
         else:
             value = None
 
