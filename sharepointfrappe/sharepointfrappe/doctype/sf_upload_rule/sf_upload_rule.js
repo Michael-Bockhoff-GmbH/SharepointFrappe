@@ -42,13 +42,15 @@ function set_field_options(frm) {
 
 		const fieldnames = fields
 			.filter((df) => df.fieldname && !skip.includes(df.fieldtype))
-			.map((df) => df.fieldname);
+			.map((df) => df.fieldname)
+			.sort((a, b) => a.localeCompare(b));
 		grid.update_docfield_property("field_name", "options", ["", ...fieldnames].join("\n"));
 		grid.refresh();
 
 		const linkFields = fields
 			.filter((df) => df.fieldtype === "Link" && df.fieldname)
-			.map((df) => df.fieldname);
+			.map((df) => df.fieldname)
+			.sort((a, b) => a.localeCompare(b));
 		frm.set_df_property("group_by_field", "options", ["", ...linkFields].join("\n"));
 	});
 }
