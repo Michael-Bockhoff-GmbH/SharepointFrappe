@@ -116,6 +116,7 @@ Go to **SF Upload Rule → New**.
 | **Conflict Behavior** | `Rename`, `Replace`, or `Fail` on duplicates |
 | **Folder Structure Mode** | `Folder Segments` (build the path yourself) or `Group by Customer` |
 | **Company as Top Folder** | (Group by Customer) prepend the record's `company` as a top folder |
+| **Doctype Folder Naming** | Keep the doctype folder in English, translate it, or combine both |
 | **Folder Segments** | One row per folder level — watch the live path preview update |
 
 **Folder Structure Mode → Group by Customer** builds folders automatically for a customer-facing
@@ -126,6 +127,11 @@ they differ — e.g. a naming-series customer becomes `CUST-0001 - Acme GmbH`, w
 stays `Acme GmbH`. Set **Customer Field** to override the auto-detection. Enable **Company as Top
 Folder** (for multi-company sites) to prepend the record's `company`, giving
 `<company> / <customer> / <doctype>`.
+
+**Doctype Folder Naming** controls the doctype subfolder's language (used in both folder modes). Pick
+a **Doctype Folder Language** and choose `Translated` (e.g. `Angebot`) or a combined form with the
+order you want — `Original - Translated` (`Quotation - Angebot`) or `Translated - Original`
+(`Angebot - Quotation`). When no translation exists the English original is kept.
 
 ### 3. Test it
 

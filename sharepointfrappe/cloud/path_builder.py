@@ -83,7 +83,7 @@ def _segments_path(rule, file_doc):
         if seg.segment_type == "Static Text":
             value = seg.value
         elif seg.segment_type == "Doctype Name":
-            value = doctype
+            value = _doctype_folder(doctype, rule)
         elif seg.segment_type == "Record Name":
             value = docname
         elif seg.segment_type == "Field Value":
@@ -163,8 +163,33 @@ def _customer_path(rule, file_doc):
     customer_id = _field_value(doctype, docname, cust_field)
     linked_doctype = _link_target(doctype, docname, cust_field)
     parts.append(_party_folder(linked_doctype, customer_id))
-    parts.append(_clean(doctype) or "Unfiled")
+    parts.append(_doctype_folder(doctype, rule) or "Unfiled")
     return "/".join(parts)
+
+
+def _doctype_folder(doctype, rule):
+    """Render the doctype subfolder name, optionally translated per the rule.
+
+    doctype_folder_naming: 'Original' | 'Translated' | 'Original - Translated' |
+    'Translated - Original'. Translation uses doctype_folder_language; when no
+    translation exists the original is kept (so it never reads 'Quotation -
+    Quotation').
+    """
+    original = _clean(doctype)
+    naming = getattr(rule, "doctype_folder_naming", None) or "Original"
+    if naming == "Original":
+        return original
+
+    lang = getattr(rule, "doctype_folder_language", None)
+    translated = _clean(_(doctype, lang=lang)) if lang else original
+    if naming == "Translated":
+        return translated or original
+
+    if not translated or translated == original:
+        return original
+    if naming == "Translated - Original":
+        return f"{translated} - {original}"
+    return f"{original} - {translated}"
 
 
 def _party_folder(linked_doctype, link_id):
