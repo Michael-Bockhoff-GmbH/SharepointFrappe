@@ -213,15 +213,15 @@ bench --site $SITE_NAME clear-cache</code></pre>
 			<tr><td>SF Cloud Connection</td><td>The connection to upload through.</td></tr>
 			<tr><td>Naming Strategy</td><td>Keep the <b>Original</b> filename or use a <b>Templated</b> one — <code>{name}</code>, <code>{field}</code>.</td></tr>
 			<tr><td>Conflict Behavior</td><td>On duplicate names: <b>Rename</b>, <b>Replace</b>, or <b>Fail</b>.</td></tr>
-			<tr><td>Folder Segments</td><td>One row per folder level, top to bottom.</td></tr>
+			<tr><td>Folder Structure Mode</td><td><b>Folder Segments</b> (build the path yourself) or <b>Group by Customer</b> (auto <code>&lt;customer&gt; / &lt;doctype&gt;</code>).</td></tr>
 		</table>
 	</div>
 
 	<!-- STEP 4 FOLDERS -->
 	<div class="fnx-section">
 		<h2><span class="fnx-step-no">4</span> Shape the folder path</h2>
-		<p class="lead">Each <b>Folder Segment</b> row is one folder level. Mix and match segment types —
-			the form shows a <b>live path preview</b> as you build it.</p>
+		<p class="lead"><b>Folder Segments</b> mode: each row is one folder level. Mix and match segment
+			types — the <b>Field</b> segment picks from a dropdown of the target doctype's fields.</p>
 		<div class="fnx-cards">
 			<div class="fnx-card"><h3>Static Text</h3><p>A literal folder name, e.g. <code>Invoices</code>.</p></div>
 			<div class="fnx-card"><h3>Field Value</h3><p>A field on the record, e.g. <code>customer</code>.</p></div>
@@ -237,6 +237,24 @@ bench --site $SITE_NAME clear-cache</code></pre>
 		<div class="fnx-note">
 			<span>📁</span>
 			<div>An empty Folder Segments table uploads straight to the connection's root folder.</div>
+		</div>
+
+		<p class="lead" style="margin-top:28px"><b>Group by Customer</b> mode: skip the segments and let
+			SharepointFrappe file everything per customer automatically — ideal for giving a customer their
+			own SharePoint area.</p>
+		<div class="fnx-note fnx-note--tip">
+			<span>🗂️</span>
+			<div>The customer field is auto-detected (<code>customer</code>, a link to Customer, or a party
+				field like Quotation's <code>party_name</code>). Files land in
+				<code>&lt;customer&gt; / &lt;doctype&gt;</code>, where the customer folder shows
+				<code>CUST-0001 - Acme GmbH</code> for a naming-series customer (or just the name otherwise).
+				Tick <b>Company as Top Folder</b> for multi-company sites to prepend
+				<code>&lt;company&gt;</code>.</div>
+		</div>
+		<div class="fnx-path">
+			<span class="fnx-sep">Preview:</span>
+			<span class="fnx-sep">/</span><span class="fnx-seg">CUST-0001 - Acme GmbH</span>
+			<span class="fnx-sep">/</span><span class="fnx-seg">Sales Invoice</span>
 		</div>
 	</div>
 
