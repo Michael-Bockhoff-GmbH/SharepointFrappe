@@ -66,7 +66,14 @@ def build_filename(rule, file_doc):
 
 
 def build_path(rule, file_doc):
-    """Resolve the rule's folder segments into a path like 'Sales Invoice/SINV-001'."""
+    """Resolve the rule into a cloud folder path, per its folder structure mode."""
+    if getattr(rule, "folder_structure", None) == "Group by Link Field":
+        return _grouped_path(rule, file_doc)
+    return _segments_path(rule, file_doc)
+
+
+def _segments_path(rule, file_doc):
+    """Resolve the folder segments table into a path like 'Sales Invoice/SINV-001'."""
     doctype = file_doc.attached_to_doctype
     docname = file_doc.attached_to_name
 
@@ -91,6 +98,47 @@ def build_path(rule, file_doc):
         parts.append(value)
 
     return "/".join(parts)
+
+
+def _grouped_path(rule, file_doc):
+    """Build '<party> / <doctype>' where the party comes from a link field.
+
+    The link field (e.g. 'customer' on Sales Invoice) is configured on the rule.
+    The party folder is the linked record's id, with its readable title appended
+    as 'id - title' when the two differ (e.g. a naming-series 'CUST-0001 - Acme').
+    """
+    doctype = file_doc.attached_to_doctype
+    docname = file_doc.attached_to_name
+
+    fieldname = getattr(rule, "group_by_field", None)
+    link_id = _field_value(doctype, docname, fieldname) if fieldname else None
+
+    linked_doctype = None
+    if fieldname:
+        df = frappe.get_meta(doctype).get_field(fieldname)
+        linked_doctype = df.options if df else None
+
+    party = _party_folder(linked_doctype, link_id)
+    subfolder = _clean(doctype) or "Unfiled"
+    return f"{party}/{subfolder}"
+
+
+def _party_folder(linked_doctype, link_id):
+    """Folder name for a linked record: 'id - title' when they differ, else 'id'."""
+    id_clean = _clean(link_id)
+    if not id_clean:
+        return "Unfiled"
+
+    readable = None
+    if linked_doctype:
+        title_field = frappe.get_meta(linked_doctype).get_title_field()
+        if title_field and title_field != "name":
+            readable = frappe.db.get_value(linked_doctype, link_id, title_field)
+
+    readable_clean = _clean(readable)
+    if readable_clean and readable_clean != id_clean:
+        return f"{id_clean} - {readable_clean}"
+    return id_clean
 
 
 def _clean(value):

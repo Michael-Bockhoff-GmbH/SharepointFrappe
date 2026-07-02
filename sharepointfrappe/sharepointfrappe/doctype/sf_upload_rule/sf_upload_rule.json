@@ -17,6 +17,8 @@
   "column_break_naming",
   "conflict_behavior",
   "folder_section",
+  "folder_structure",
+  "group_by_field",
   "folder_section_help",
   "folder_segments"
  ],
@@ -97,12 +99,31 @@
    "label": "Folder Structure"
   },
   {
+   "default": "Folder Segments",
+   "description": "<b>Folder Segments</b>: build the path yourself, one row per level. <b>Group by Link Field</b>: auto-create &lt;party&gt; / &lt;doctype&gt; folders, grouping by a link field (e.g. Customer).",
+   "fieldname": "folder_structure",
+   "fieldtype": "Select",
+   "label": "Folder Structure Mode",
+   "options": "Folder Segments\nGroup by Link Field",
+   "reqd": 1
+  },
+  {
+   "depends_on": "eval:doc.folder_structure==\"Group by Link Field\"",
+   "description": "The Link field on the target doctype pointing to the party to group by. Folders become &lt;party&gt; / &lt;doctype&gt; / files.",
+   "fieldname": "group_by_field",
+   "fieldtype": "Select",
+   "label": "Group By Field",
+   "mandatory_depends_on": "eval:doc.folder_structure==\"Group by Link Field\""
+  },
+  {
+   "depends_on": "eval:doc.folder_structure==\"Folder Segments\"",
    "fieldname": "folder_section_help",
    "fieldtype": "HTML",
    "label": "Folder Structure Help",
    "options": "<p class=\"text-muted\">Each row is one folder level, top to bottom. Empty table uploads to the connection root.</p>"
   },
   {
+   "depends_on": "eval:doc.folder_structure==\"Folder Segments\"",
    "fieldname": "folder_segments",
    "fieldtype": "Table",
    "label": "Folder Segments",
