@@ -185,8 +185,30 @@ def _party_folder(linked_doctype, link_id):
     return id_clean
 
 
+# characters SharePoint/OneDrive forbid in item names, plus control chars
+_ILLEGAL = re.compile(r'[\\/:*?"<>|\x00-\x1f]')
+# reserved device names SharePoint rejects (case-insensitive, with/without ext)
+_RESERVED = {
+    "con", "prn", "aux", "nul", "desktop.ini", ".lock",
+    *(f"com{i}" for i in range(1, 10)),
+    *(f"lpt{i}" for i in range(1, 10)),
+}
+
+
 def _clean(value):
-    """Remove characters illegal in folder names."""
+    """Sanitize a value into a safe SharePoint folder/file name segment.
+
+    Replaces forbidden characters, trims leading/trailing spaces and trailing
+    dots, drops a leading '~$', and guards reserved device names.
+    """
     if value is None:
         return ""
-    return re.sub(r'[\\/:*?"<>|]', "_", str(value)).strip()
+    # SharePoint forbids leading/trailing spaces and trailing dots
+    name = _ILLEGAL.sub("_", str(value)).strip().rstrip(". ")
+    if name.startswith("~$"):
+        name = name[2:].strip()
+    if name in (".", ".."):
+        return ""
+    if name.split(".", 1)[0].lower() in _RESERVED or name.lower() in _RESERVED:
+        name = f"_{name}"
+    return name

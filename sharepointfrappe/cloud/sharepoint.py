@@ -3,15 +3,17 @@ from datetime import timedelta
 from urllib.parse import quote
 import frappe
 from frappe.utils import now_datetime, get_datetime
+from frappe.utils.password import get_decrypted_password, set_encrypted_password
 
 GRAPH = "https://graph.microsoft.com/v1.0"
+DOCTYPE = "SF Cloud Connection"
 
 
 def get_token(conn):
-    """Get a login token. Reuse the saved one until it expires."""
-    expiry = frappe.db.get_value("SF Cloud Connection", conn.name, "token_expiry")
+    """Get a login token. Reuse the saved (encrypted) one until it expires."""
+    expiry = frappe.db.get_value(DOCTYPE, conn.name, "token_expiry")
     if expiry and get_datetime(expiry) > now_datetime():
-        cached = conn.get_password("cached_token")
+        cached = get_decrypted_password(DOCTYPE, conn.name, "cached_token", raise_exception=False)
         if cached:
             return cached
 
@@ -28,7 +30,9 @@ def get_token(conn):
     token = token_info["access_token"]
 
     expires_in = token_info.get("expires_in", 3600) - 300
-    conn.db_set("cached_token", token)
+    # store the token encrypted at rest (__Auth); keep only a placeholder in the column
+    set_encrypted_password(DOCTYPE, conn.name, token, "cached_token")
+    conn.db_set("cached_token", "*****")
     conn.db_set("token_expiry", now_datetime() + timedelta(seconds=expires_in))
     return token
 
