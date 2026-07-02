@@ -12,16 +12,12 @@ frappe.ui.form.on("SF Upload Rule", {
 				frappe.model.set_value(row.doctype, row.name, "field_name", "");
 			}
 		});
-		if (frm.doc.group_by_field) {
-			frm.set_value("group_by_field", "");
-		}
 		set_field_options(frm);
 	},
 });
 
-// Populate the field dropdowns from the selected target doctype:
-//  - folder segment "Field" → any field
-//  - "Group By Field"       → only Link fields (used by the grouped mode)
+// Populate the folder segment "Field" dropdown with the fields of the
+// selected target doctype (layout-only fieldtypes excluded), sorted A-Z.
 function set_field_options(frm) {
 	const grid = frm.fields_dict.folder_segments.grid;
 	const dt = frm.doc.target_doctype;
@@ -29,7 +25,6 @@ function set_field_options(frm) {
 	if (!dt) {
 		grid.update_docfield_property("field_name", "options", "");
 		grid.refresh();
-		frm.set_df_property("group_by_field", "options", "");
 		return;
 	}
 
@@ -38,19 +33,12 @@ function set_field_options(frm) {
 			"Section Break", "Column Break", "Tab Break", "HTML", "Table",
 			"Table MultiSelect", "Button", "Fold", "Heading", "Image",
 		];
-		const fields = frappe.get_meta(dt).fields || [];
-
-		const fieldnames = fields
+		const fieldnames = (frappe.get_meta(dt).fields || [])
 			.filter((df) => df.fieldname && !skip.includes(df.fieldtype))
 			.map((df) => df.fieldname)
 			.sort((a, b) => a.localeCompare(b));
+
 		grid.update_docfield_property("field_name", "options", ["", ...fieldnames].join("\n"));
 		grid.refresh();
-
-		const linkFields = fields
-			.filter((df) => df.fieldtype === "Link" && df.fieldname)
-			.map((df) => df.fieldname)
-			.sort((a, b) => a.localeCompare(b));
-		frm.set_df_property("group_by_field", "options", ["", ...linkFields].join("\n"));
 	});
 }

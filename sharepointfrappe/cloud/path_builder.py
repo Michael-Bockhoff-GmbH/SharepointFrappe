@@ -67,8 +67,8 @@ def build_filename(rule, file_doc):
 
 def build_path(rule, file_doc):
     """Resolve the rule into a cloud folder path, per its folder structure mode."""
-    if getattr(rule, "folder_structure", None) == "Group by Link Field":
-        return _grouped_path(rule, file_doc)
+    if getattr(rule, "folder_structure", None) == "Group by Customer":
+        return _customer_path(rule, file_doc)
     return _segments_path(rule, file_doc)
 
 
@@ -100,27 +100,26 @@ def _segments_path(rule, file_doc):
     return "/".join(parts)
 
 
-def _grouped_path(rule, file_doc):
-    """Build '<party> / <doctype>' where the party comes from a link field.
+def _customer_path(rule, file_doc):
+    """Build '<customer> / <doctype>', optionally under a '<company>' top folder.
 
-    The link field (e.g. 'customer' on Sales Invoice) is configured on the rule.
-    The party folder is the linked record's id, with its readable title appended
-    as 'id - title' when the two differ (e.g. a naming-series 'CUST-0001 - Acme').
+    The record's `customer` field gives the customer; the folder is that id with
+    the customer's readable name appended as 'id - name' when they differ (e.g. a
+    naming-series 'CUST-0001 - Acme'). When 'Company as Top Folder' is on, the
+    record's `company` field is prepended.
     """
     doctype = file_doc.attached_to_doctype
     docname = file_doc.attached_to_name
 
-    fieldname = getattr(rule, "group_by_field", None)
-    link_id = _field_value(doctype, docname, fieldname) if fieldname else None
+    parts = []
+    if getattr(rule, "prepend_company", 0):
+        company = _field_value(doctype, docname, "company")
+        parts.append(_party_folder("Company", company))
 
-    linked_doctype = None
-    if fieldname:
-        df = frappe.get_meta(doctype).get_field(fieldname)
-        linked_doctype = df.options if df else None
-
-    party = _party_folder(linked_doctype, link_id)
-    subfolder = _clean(doctype) or "Unfiled"
-    return f"{party}/{subfolder}"
+    customer = _field_value(doctype, docname, "customer")
+    parts.append(_party_folder("Customer", customer))
+    parts.append(_clean(doctype) or "Unfiled")
+    return "/".join(parts)
 
 
 def _party_folder(linked_doctype, link_id):

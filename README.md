@@ -114,14 +114,16 @@ Go to **SF Upload Rule → New**.
 | **SF Cloud Connection** | The connection to upload through |
 | **Naming Strategy** | `Original` filename or a `Templated` name (`{name}`, `{field}`) |
 | **Conflict Behavior** | `Rename`, `Replace`, or `Fail` on duplicates |
-| **Folder Structure Mode** | `Folder Segments` (build the path yourself) or `Group by Link Field` |
+| **Folder Structure Mode** | `Folder Segments` (build the path yourself) or `Group by Customer` |
+| **Company as Top Folder** | (Group by Customer) prepend the record's `company` as a top folder |
 | **Folder Segments** | One row per folder level — watch the live path preview update |
 
-**Folder Structure Mode → Group by Link Field** builds folders automatically for a customer-facing
-SharePoint: pick a link field on the target doctype (e.g. `customer` on Sales Invoice) and every
-attachment is filed under `<party> / <doctype>`. The party folder is the linked record's id, with
-its readable title appended when they differ — e.g. a naming-series customer becomes
-`CUST-0001 - Acme GmbH`, while a name-based one stays `Acme GmbH`.
+**Folder Structure Mode → Group by Customer** builds folders automatically for a customer-facing
+SharePoint. It reads the record's `customer` field and files every attachment under
+`<customer> / <doctype>`. The customer folder is the customer id with its name appended when they
+differ — e.g. a naming-series customer becomes `CUST-0001 - Acme GmbH`, while a name-based one stays
+`Acme GmbH`. Enable **Company as Top Folder** (for multi-company sites) to prepend the record's
+`company`, giving `<company> / <customer> / <doctype>`.
 
 ### 3. Test it
 

@@ -18,7 +18,7 @@
   "conflict_behavior",
   "folder_section",
   "folder_structure",
-  "group_by_field",
+  "prepend_company",
   "folder_section_help",
   "folder_segments"
  ],
@@ -100,20 +100,20 @@
   },
   {
    "default": "Folder Segments",
-   "description": "<b>Folder Segments</b>: build the path yourself, one row per level. <b>Group by Link Field</b>: auto-create &lt;party&gt; / &lt;doctype&gt; folders, grouping by a link field (e.g. Customer).",
+   "description": "<b>Folder Segments</b>: build the path yourself, one row per level. <b>Group by Customer</b>: auto-create &lt;customer&gt; / &lt;doctype&gt; folders from the record's <code>customer</code> field.",
    "fieldname": "folder_structure",
    "fieldtype": "Select",
    "label": "Folder Structure Mode",
-   "options": "Folder Segments\nGroup by Link Field",
+   "options": "Folder Segments\nGroup by Customer",
    "reqd": 1
   },
   {
-   "depends_on": "eval:doc.folder_structure==\"Group by Link Field\"",
-   "description": "The Link field on the target doctype pointing to the party to group by. Folders become &lt;party&gt; / &lt;doctype&gt; / files.",
-   "fieldname": "group_by_field",
-   "fieldtype": "Select",
-   "label": "Group By Field",
-   "mandatory_depends_on": "eval:doc.folder_structure==\"Group by Link Field\""
+   "default": "0",
+   "depends_on": "eval:doc.folder_structure==\"Group by Customer\"",
+   "description": "Prepend the record's <code>company</code> as a top folder: &lt;company&gt; / &lt;customer&gt; / &lt;doctype&gt; / files. Use when ERPNext hosts multiple companies.",
+   "fieldname": "prepend_company",
+   "fieldtype": "Check",
+   "label": "Company as Top Folder"
   },
   {
    "depends_on": "eval:doc.folder_structure==\"Folder Segments\"",
