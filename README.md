@@ -96,8 +96,10 @@ Go to **SF Cloud Connection → New**.
 
 1. Register an app in Azure AD and grant it `Sites.ReadWrite.All`.
 2. Enter the **Tenant ID**, **Client ID**, and **Client Secret**.
-3. Enter the **Site Name** (the part after `/sites/` in the SharePoint URL) and the
-   **Drive Name** (document library).
+3. From your SharePoint URL `https://<tenant>.sharepoint.com/sites/<site>`, enter the
+   **Tenant Name** (`<tenant>`, before `.sharepoint.com`) and the **Site Name** (`<site>`,
+   after `/sites/`). The `sites/` prefix is added for you.
+4. Enter the **Drive Name** (the document library, e.g. `Documents` / `Dokumente`).
 
 Click **Connect** — a green *Connected* pill confirms the credentials work.
 

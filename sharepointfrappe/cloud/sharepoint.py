@@ -32,9 +32,25 @@ def get_token(conn):
     return token
 
 
+def _normalize_site_path(site_path):
+    """Turn a user-entered site path into the form Graph expects.
+
+    Accepts just the site name ("FrappeTest"), the full path ("sites/FrappeTest")
+    or one with a leading slash ("/sites/FrappeTest"). Prepends "sites/" unless a
+    "sites/" or "teams/" prefix is already present, so the user doesn't have to.
+    """
+    path = (site_path or "").strip().strip("/")
+    if not path:
+        return ""
+    if not path.startswith(("sites/", "teams/")):
+        path = f"sites/{path}"
+    return path
+
+
 def get_site_id(conn, token):
     """Find the SharePoint site id."""
-    url = f"{GRAPH}/sites/{conn.site_name}.sharepoint.com:/{conn.site_path}"
+    site_path = _normalize_site_path(conn.site_path)
+    url = f"{GRAPH}/sites/{conn.site_name}.sharepoint.com:/{site_path}"
     res = requests.get(url, headers={"Authorization": f"Bearer {token}"}, timeout=30)
     res.raise_for_status()
     return res.json()["id"]

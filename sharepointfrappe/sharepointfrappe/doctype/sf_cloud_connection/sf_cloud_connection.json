@@ -70,17 +70,19 @@
    "fieldtype": "Column Break"
   },
   {
+   "description": "Your Microsoft 365 tenant &mdash; the part before <b>.sharepoint.com</b> in the URL. e.g. for <b>contoso</b>.sharepoint.com enter <code>contoso</code>",
    "fieldname": "site_name",
    "fieldtype": "Data",
-   "label": "Site Name",
+   "label": "Tenant Name",
    "reqd": 1,
    "read_only_depends_on": "eval:doc.status==\"Connected\""
   },
   {
-   "description": "The /sites/&lt;name&gt; portion of the SharePoint URL",
+   "description": "The site name after <b>/sites/</b> in the URL. e.g. for .sharepoint.com/sites/<b>FrappeTest</b> enter <code>FrappeTest</code> (the <code>sites/</code> prefix is added automatically)",
    "fieldname": "site_path",
    "fieldtype": "Data",
-   "label": "Site Path",
+   "label": "Site Name",
+   "reqd": 1,
    "read_only_depends_on": "eval:doc.status==\"Connected\""
   },
   {
