@@ -1,5 +1,6 @@
 import requests
 from datetime import timedelta
+from urllib.parse import quote
 import frappe
 from frappe.utils import now_datetime, get_datetime
 
@@ -84,8 +85,14 @@ def connect(conn):
 
 def _get_child_id(base, headers, parent, name):
     """Find an existing child folder's id by name."""
-    url = f"{base}/items/{parent}/children?$filter=name eq '{name}'"
-    res = requests.get(url, headers=headers, timeout=30)
+    # OData: escape single quotes by doubling; let requests URL-encode the value
+    escaped = name.replace("'", "''")
+    res = requests.get(
+        f"{base}/items/{parent}/children",
+        headers=headers,
+        params={"$filter": f"name eq '{escaped}'"},
+        timeout=30,
+    )
     res.raise_for_status()
     items = res.json()["value"]
     return items[0]["id"] if items else None
@@ -122,7 +129,9 @@ def upload(conn, folder_id, file_name, content, conflict="rename"):
     token = get_token(conn)
     headers = {"Authorization": f"Bearer {token}"}
     base = f"{GRAPH}/sites/{conn.site_id}/drives/{conn.drive_id}"
-    url = f"{base}/items/{folder_id}:/{file_name}:/content?@microsoft.graph.conflictBehavior={conflict}"
+    # URL-encode the file name so '#', '%', spaces etc. can't corrupt the path
+    encoded_name = quote(file_name, safe="")
+    url = f"{base}/items/{folder_id}:/{encoded_name}:/content?@microsoft.graph.conflictBehavior={conflict}"
     res = requests.put(url, headers=headers, data=content, timeout=60)
     if res.status_code == 409:
         frappe.throw(f"A file named '{file_name}' already exists in the target folder.")
