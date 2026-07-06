@@ -1,16 +1,19 @@
 import requests
 from datetime import timedelta
+from urllib.parse import quote
 import frappe
 from frappe.utils import now_datetime, get_datetime
+from frappe.utils.password import get_decrypted_password, set_encrypted_password
 
 GRAPH = "https://graph.microsoft.com/v1.0"
+DOCTYPE = "SF Cloud Connection"
 
 
 def get_token(conn):
-    """Get a login token. Reuse the saved one until it expires."""
-    expiry = frappe.db.get_value("SF Cloud Connection", conn.name, "token_expiry")
+    """Get a login token. Reuse the saved (encrypted) one until it expires."""
+    expiry = frappe.db.get_value(DOCTYPE, conn.name, "token_expiry")
     if expiry and get_datetime(expiry) > now_datetime():
-        cached = conn.get_password("cached_token")
+        cached = get_decrypted_password(DOCTYPE, conn.name, "cached_token", raise_exception=False)
         if cached:
             return cached
 
@@ -27,14 +30,32 @@ def get_token(conn):
     token = token_info["access_token"]
 
     expires_in = token_info.get("expires_in", 3600) - 300
-    conn.db_set("cached_token", token)
+    # store the token encrypted at rest (__Auth); keep only a placeholder in the column
+    set_encrypted_password(DOCTYPE, conn.name, token, "cached_token")
+    conn.db_set("cached_token", "*****")
     conn.db_set("token_expiry", now_datetime() + timedelta(seconds=expires_in))
     return token
 
 
+def _normalize_site_path(site_path):
+    """Turn a user-entered site path into the form Graph expects.
+
+    Accepts just the site name ("FrappeTest"), the full path ("sites/FrappeTest")
+    or one with a leading slash ("/sites/FrappeTest"). Prepends "sites/" unless a
+    "sites/" or "teams/" prefix is already present, so the user doesn't have to.
+    """
+    path = (site_path or "").strip().strip("/")
+    if not path:
+        return ""
+    if not path.startswith(("sites/", "teams/")):
+        path = f"sites/{path}"
+    return path
+
+
 def get_site_id(conn, token):
     """Find the SharePoint site id."""
-    url = f"{GRAPH}/sites/{conn.site_name}.sharepoint.com:/{conn.site_path}"
+    site_path = _normalize_site_path(conn.site_path)
+    url = f"{GRAPH}/sites/{conn.site_name}.sharepoint.com:/{site_path}"
     res = requests.get(url, headers={"Authorization": f"Bearer {token}"}, timeout=30)
     res.raise_for_status()
     return res.json()["id"]
@@ -68,8 +89,14 @@ def connect(conn):
 
 def _get_child_id(base, headers, parent, name):
     """Find an existing child folder's id by name."""
-    url = f"{base}/items/{parent}/children?$filter=name eq '{name}'"
-    res = requests.get(url, headers=headers, timeout=30)
+    # OData: escape single quotes by doubling; let requests URL-encode the value
+    escaped = name.replace("'", "''")
+    res = requests.get(
+        f"{base}/items/{parent}/children",
+        headers=headers,
+        params={"$filter": f"name eq '{escaped}'"},
+        timeout=30,
+    )
     res.raise_for_status()
     items = res.json()["value"]
     return items[0]["id"] if items else None
@@ -106,7 +133,9 @@ def upload(conn, folder_id, file_name, content, conflict="rename"):
     token = get_token(conn)
     headers = {"Authorization": f"Bearer {token}"}
     base = f"{GRAPH}/sites/{conn.site_id}/drives/{conn.drive_id}"
-    url = f"{base}/items/{folder_id}:/{file_name}:/content?@microsoft.graph.conflictBehavior={conflict}"
+    # URL-encode the file name so '#', '%', spaces etc. can't corrupt the path
+    encoded_name = quote(file_name, safe="")
+    url = f"{base}/items/{folder_id}:/{encoded_name}:/content?@microsoft.graph.conflictBehavior={conflict}"
     res = requests.put(url, headers=headers, data=content, timeout=60)
     if res.status_code == 409:
         frappe.throw(f"A file named '{file_name}' already exists in the target folder.")

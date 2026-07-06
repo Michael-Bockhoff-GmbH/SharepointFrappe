@@ -82,12 +82,9 @@
 	.fnx-card p { font-size: 13.5px; color: var(--fnx-muted); margin: 0; }
 	.fnx-card__icon { font-size: 22px; margin-bottom: 8px; display: block; }
 
-	/* provider columns */
-	.fnx-two { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-	@media (max-width: 720px) { .fnx-two { grid-template-columns: 1fr; } }
+	/* provider panel */
 	.fnx-panel { background: #fff; border: 1px solid var(--fnx-line); border-radius: 16px; padding: 22px 24px; }
 	.fnx-panel--sp { border-top: 4px solid var(--fnx-blue); }
-	.fnx-panel--gd { border-top: 4px solid var(--fnx-teal); }
 	.fnx-panel h3 { margin: 0 0 14px; font-size: 17px; color: var(--fnx-navy); font-weight: 700; }
 	.fnx-panel ol { margin: 0; padding-left: 20px; }
 	.fnx-panel li { margin-bottom: 9px; }
@@ -146,10 +143,9 @@
 	<div class="fnx-hero">
 		<img class="fnx-hero__logo" src="/assets/sharepointfrappe/images/logo_bockhoff.png" alt="Bockhoff Technologies" />
 		<h1>SharepointFrappe Setup Guide</h1>
-		<p>Sync your Frappe file attachments to SharePoint &amp; Google Drive — and keep them in Frappe.</p>
+		<p>Sync your Frappe file attachments to SharePoint — and keep them in Frappe.</p>
 		<div class="fnx-chips">
 			<span class="fnx-chip">SharePoint</span>
-			<span class="fnx-chip">Google Drive</span>
 			<span class="fnx-chip">Per-DocType rules</span>
 			<span class="fnx-chip">Templated folders</span>
 		</div>
@@ -161,7 +157,7 @@
 		<p class="lead">It hooks into Frappe's core file handling, so any attachment can be mirrored
 			to — or stored only in — your cloud drive, based on rules you define per DocType.</p>
 		<div class="fnx-cards">
-			<div class="fnx-card"><span class="fnx-card__icon">🔌</span><h3>Connect providers</h3><p>SharePoint and Google Drive, side by side.</p></div>
+			<div class="fnx-card"><span class="fnx-card__icon">🔌</span><h3>Connect SharePoint</h3><p>Via an Azure AD app registration.</p></div>
 			<div class="fnx-card"><span class="fnx-card__icon">📂</span><h3>Per-DocType rules</h3><p>Frappe only, Cloud only, or Both.</p></div>
 			<div class="fnx-card"><span class="fnx-card__icon">🧭</span><h3>Templated folders</h3><p>Build paths from fields, record &amp; doctype names.</p></div>
 			<div class="fnx-card"><span class="fnx-card__icon">🔐</span><h3>Cached &amp; secure</h3><p>Tokens cached with expiry; secrets stored encrypted.</p></div>
@@ -181,35 +177,24 @@ bench build --app sharepointfrappe
 bench --site $SITE_NAME clear-cache</code></pre>
 		<div class="fnx-note fnx-note--tip">
 			<span>💡</span>
-			<div><b>Requirements:</b> Frappe v15+, Python 3.10+. The Python packages
-				<code>google-api-python-client</code> and <code>google-auth</code> install automatically.</div>
+			<div><b>Requirements:</b> Frappe v16+, Python 3.10+.</div>
 		</div>
 	</div>
 
 	<!-- STEP 2 CONNECT -->
 	<div class="fnx-section">
 		<h2><span class="fnx-step-no">2</span> Create a SF Cloud Connection</h2>
-		<p class="lead">Open <b>SF Cloud Connection → New</b>, pick a provider, and fill in its credentials.
+		<p class="lead">Open <b>SF Cloud Connection → New</b> and fill in the SharePoint credentials.
 			Hit <b>Connect</b> — a green <span class="fnx-tag fnx-tag--green">Connected</span> pill means you're good.</p>
-		<div class="fnx-two">
-			<div class="fnx-panel fnx-panel--sp">
-				<h3>🟦 SharePoint</h3>
-				<ol>
-					<li>Register an app in <b>Azure AD</b> and grant <code>Sites.ReadWrite.All</code>.</li>
-					<li>Copy the <b>Tenant ID</b>, <b>Client ID</b> and create a <b>Client Secret</b>.</li>
-					<li>Set <b>Site Name</b> — the part after <code>/sites/</code> in the URL.</li>
-					<li>Set the <b>Drive Name</b> (the document library to upload into).</li>
-				</ol>
-			</div>
-			<div class="fnx-panel fnx-panel--gd">
-				<h3>🟩 Google Drive</h3>
-				<ol>
-					<li>Create a <b>service account</b> in Google Cloud and download its JSON key.</li>
-					<li>Share the destination Drive folder with the service account's email.</li>
-					<li>Attach the JSON key in the form — it's validated automatically.</li>
-					<li>Set the <b>Root Folder ID</b> (from the folder's URL).</li>
-				</ol>
-			</div>
+		<div class="fnx-panel fnx-panel--sp">
+			<h3>🟦 SharePoint</h3>
+			<ol>
+				<li>Register an app in <b>Azure AD</b> and grant <code>Sites.ReadWrite.All</code>.</li>
+				<li>Copy the <b>Tenant ID</b>, <b>Client ID</b> and create a <b>Client Secret</b>.</li>
+				<li>From <code>https://&lt;tenant&gt;.sharepoint.com/sites/&lt;site&gt;</code>, set the
+					<b>Tenant Name</b> (<code>&lt;tenant&gt;</code>) and <b>Site Name</b> (<code>&lt;site&gt;</code>).</li>
+				<li>Set the <b>Drive Name</b> (the document library to upload into).</li>
+			</ol>
 		</div>
 	</div>
 
@@ -228,15 +213,15 @@ bench --site $SITE_NAME clear-cache</code></pre>
 			<tr><td>SF Cloud Connection</td><td>The connection to upload through.</td></tr>
 			<tr><td>Naming Strategy</td><td>Keep the <b>Original</b> filename or use a <b>Templated</b> one — <code>{name}</code>, <code>{field}</code>.</td></tr>
 			<tr><td>Conflict Behavior</td><td>On duplicate names: <b>Rename</b>, <b>Replace</b>, or <b>Fail</b>.</td></tr>
-			<tr><td>Folder Segments</td><td>One row per folder level, top to bottom.</td></tr>
+			<tr><td>Folder Structure Mode</td><td><b>Folder Segments</b> (build the path yourself) or <b>Group by Customer</b> (auto <code>&lt;customer&gt; / &lt;doctype&gt;</code>).</td></tr>
 		</table>
 	</div>
 
 	<!-- STEP 4 FOLDERS -->
 	<div class="fnx-section">
 		<h2><span class="fnx-step-no">4</span> Shape the folder path</h2>
-		<p class="lead">Each <b>Folder Segment</b> row is one folder level. Mix and match segment types —
-			the form shows a <b>live path preview</b> as you build it.</p>
+		<p class="lead"><b>Folder Segments</b> mode: each row is one folder level. Mix and match segment
+			types — the <b>Field</b> segment picks from a dropdown of the target doctype's fields.</p>
 		<div class="fnx-cards">
 			<div class="fnx-card"><h3>Static Text</h3><p>A literal folder name, e.g. <code>Invoices</code>.</p></div>
 			<div class="fnx-card"><h3>Field Value</h3><p>A field on the record, e.g. <code>customer</code>.</p></div>
@@ -252,6 +237,24 @@ bench --site $SITE_NAME clear-cache</code></pre>
 		<div class="fnx-note">
 			<span>📁</span>
 			<div>An empty Folder Segments table uploads straight to the connection's root folder.</div>
+		</div>
+
+		<p class="lead" style="margin-top:28px"><b>Group by Customer</b> mode: skip the segments and let
+			SharepointFrappe file everything per customer automatically — ideal for giving a customer their
+			own SharePoint area.</p>
+		<div class="fnx-note fnx-note--tip">
+			<span>🗂️</span>
+			<div>The customer field is auto-detected (<code>customer</code>, a link to Customer, or a party
+				field like Quotation's <code>party_name</code>). Files land in
+				<code>&lt;customer&gt; / &lt;doctype&gt;</code>, where the customer folder shows
+				<code>CUST-0001 - Acme GmbH</code> for a naming-series customer (or just the name otherwise).
+				Tick <b>Company as Top Folder</b> for multi-company sites to prepend
+				<code>&lt;company&gt;</code>.</div>
+		</div>
+		<div class="fnx-path">
+			<span class="fnx-sep">Preview:</span>
+			<span class="fnx-sep">/</span><span class="fnx-seg">CUST-0001 - Acme GmbH</span>
+			<span class="fnx-sep">/</span><span class="fnx-seg">Sales Invoice</span>
 		</div>
 	</div>
 

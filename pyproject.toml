@@ -3,14 +3,11 @@ name = "sharepointfrappe"
 authors = [
     { name = "Octo Advisory", email = "team@octoadvisory.com"}
 ]
-description = "Upload attachments to SharePoint and Google Drive from Frappe"
+description = "Upload attachments to SharePoint from Frappe"
 requires-python = ">=3.10"
 readme = "README.md"
 dynamic = ["version"]
-dependencies = [
-    "google-api-python-client",
-    "google-auth",
-]
+dependencies = []
 
 [build-system]
 requires = ["flit_core >=3.4,<4"]
